@@ -11,5 +11,3 @@ Some random patches
      - merge repairis by post-factum
 
      - AC's enhancements too
-
-     - if I'm missing anything, post and I'll add it
