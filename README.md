@@ -8,6 +8,6 @@ Some random patches
      - ck's v0.447 ported to 3.15, including the often missing
        CONFIG_SMP-n fix
 
-     - merge repairis by post-factum
+     - merge repairs by post-factum
 
      - AC's enhancements too
