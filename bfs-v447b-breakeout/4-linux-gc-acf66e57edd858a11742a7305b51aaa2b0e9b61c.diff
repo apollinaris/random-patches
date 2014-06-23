@@ -1,0 +1,47 @@
+From acf66e57edd858a11742a7305b51aaa2b0e9b61c Mon Sep 17 00:00:00 2001
+From: Alfred Chen <cchalpha@gmail.com>
+Date: Mon, 9 Jun 2014 11:22:02 +0800
+Subject: [PATCH] [BFS] locality doesn't need to be kmalloc.
+
+---
+ kernel/sched/bfs.c       | 3 +--
+ kernel/sched/bfs_sched.h | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/bfs.c b/kernel/sched/bfs.c
+index 6cec434..f86b060 100644
+--- a/kernel/sched/bfs.c
++++ b/kernel/sched/bfs.c
+@@ -741,7 +741,7 @@ static inline bool scaling_rq(struct rq *rq);
+ static void
+ resched_best_mask(int best_cpu, struct rq *rq, cpumask_t *tmpmask)
+ {
+-	const static int locality2ranking[] = {
++	static const int locality2ranking[] = {
+ 		/*locality 0*/
+ 		0,
+ 		/*locality 1*/
+@@ -6898,7 +6898,6 @@ void __init sched_init(void)
+ 		cpumask_clear(&rq->cache_siblings);
+ 		cpumask_set_cpu(i, &rq->cache_siblings);
+ #endif
+-		rq->cpu_locality = kmalloc(nr_cpu_ids * sizeof(int *), GFP_ATOMIC);
+ 		for_each_possible_cpu(j) {
+ 			if (i == j)
+ 				rq->cpu_locality[j] = 0;
+diff --git a/kernel/sched/bfs_sched.h b/kernel/sched/bfs_sched.h
+index 8873791..7664628 100644
+--- a/kernel/sched/bfs_sched.h
++++ b/kernel/sched/bfs_sched.h
+@@ -33,7 +33,7 @@ struct rq {
+ 
+ 	struct root_domain *rd;
+ 	struct sched_domain *sd;
+-	int *cpu_locality; /* CPU relative cache distance */
++	int cpu_locality[NR_CPUS]; /* CPU relative cache distance */
+ #ifdef CONFIG_SCHED_SMT
+ 	/* See if all smt siblings are idle */
+ 	cpumask_t smt_siblings;
+-- 
+1.8.5.2
+

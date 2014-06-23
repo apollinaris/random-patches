@@ -1,0 +1,29 @@
+diff -Naur linux-3.15/kernel/sched/bfs.c linux-3.15-ck2/kernel/sched/bfs.c
+--- linux-3.15/kernel/sched/bfs.c	2014-06-22 20:55:47.000000000 -0400
++++ linux-3.15-ck2/kernel/sched/bfs.c	2014-06-22 20:58:26.000000000 -0400
+@@ -72,6 +72,7 @@
+ #include <linux/context_tracking.h>
+ #include <linux/sched/sysctl.h>
+ 
++#include <asm/irq_regs.h>
+ #include <asm/switch_to.h>
+ #include <asm/tlb.h>
+ #include <asm/unistd.h>
+@@ -124,7 +125,7 @@
+ 
+ void print_scheduler_version(void)
+ {
+-	printk(KERN_INFO "BFS CPU scheduler v0.447 by Con Kolivas.\n");
++	printk(KERN_INFO "BFS CPU scheduler v0.447b by Con Kolivas.\n");
+ }
+ 
+ /*
+@@ -6947,7 +6948,7 @@
+ 	static unsigned long prev_jiffy;	/* ratelimiting */
+ 
+ 	rcu_sleep_check(); /* WARN_ON_ONCE() by default, no rate limit reqd. */
+-	if ((preempt_count_equals(preempt_offset) && !irqs_disabled()) &&
++	if ((preempt_count_equals(preempt_offset) && !irqs_disabled() &&
+ 		!is_idle_task(current)) ||
+ 	    system_state != SYSTEM_RUNNING || oops_in_progress)
+ 		return;

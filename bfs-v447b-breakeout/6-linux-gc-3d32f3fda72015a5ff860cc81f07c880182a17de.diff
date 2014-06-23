@@ -1,0 +1,25 @@
+From 3d32f3fda72015a5ff860cc81f07c880182a17de Mon Sep 17 00:00:00 2001
+From: Alfred Chen <cchalpha@gmail.com>
+Date: Thu, 12 Jun 2014 10:34:41 +0800
+Subject: [PATCH] [BFS] fix set_table_entry() usage
+
+---
+ kernel/sched/bfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/bfs.c b/kernel/sched/bfs.c
+index 571b376..cebe862 100644
+--- a/kernel/sched/bfs.c
++++ b/kernel/sched/bfs.c
+@@ -5388,7 +5388,7 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
+ 		sizeof(int), 0644, proc_dointvec_minmax);
+ 	set_table_entry(&table[11], "max_newidle_lb_cost",
+ 		&sd->max_newidle_lb_cost,
+-		sizeof(long), 0644, proc_doulongvec_minmax, false);
++		sizeof(long), 0644, proc_doulongvec_minmax);
+ 	set_table_entry(&table[12], "name", sd->name,
+ 		CORENAME_MAX_SIZE, 0444, proc_dostring);
+ 	/* &table[13] is terminator */
+-- 
+1.8.5.2
+

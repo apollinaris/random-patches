@@ -1,0 +1,48 @@
+From cd1ea8f57e8790059d64416f763f6451144b4b6b Mon Sep 17 00:00:00 2001
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+Date: Thu, 12 Dec 2013 16:58:39 +0200
+Subject: [PATCH] ck-3.12: fix BFS compiling with CONFIG_SMP=n
+
+---
+ kernel/sched/bfs.c       | 5 -----
+ kernel/sched/bfs_sched.h | 8 ++++++++
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/sched/bfs.c b/kernel/sched/bfs.c
+index f86b060..571b376 100644
+--- a/kernel/sched/bfs.c
++++ b/kernel/sched/bfs.c
+@@ -301,11 +301,6 @@ static inline void update_clocks(struct rq *rq)
+ 	rq->last_niffy = grq.niffies;
+ }
+ #else /* CONFIG_SMP */
+-static struct rq *uprq;
+-#define cpu_rq(cpu)	(uprq)
+-#define this_rq()	(uprq)
+-#define task_rq(p)	(uprq)
+-#define cpu_curr(cpu)	((uprq)->curr)
+ static inline int cpu_of(struct rq *rq)
+ {
+ 	return 0;
+diff --git a/kernel/sched/bfs_sched.h b/kernel/sched/bfs_sched.h
+index 7664628..770e705 100644
+--- a/kernel/sched/bfs_sched.h
++++ b/kernel/sched/bfs_sched.h
+@@ -87,6 +87,14 @@ struct rq {
+ struct rq *cpu_rq(int cpu);
+ #endif
+ 
++#ifndef CONFIG_SMP
++static struct rq *uprq;
++#define cpu_rq(cpu)	(uprq)
++#define this_rq()	(uprq)
++#define task_rq(p)	(uprq)
++#define cpu_curr(cpu)	((uprq)->curr)
++#endif /* CONFIG_SMP */
++
+ static inline u64 rq_clock(struct rq *rq)
+ {
+ 	return rq->clock;
+-- 
+1.8.5.2
+

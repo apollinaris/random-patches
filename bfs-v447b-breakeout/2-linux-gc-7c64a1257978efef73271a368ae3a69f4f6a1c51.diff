@@ -1,0 +1,25 @@
+From 7c64a1257978efef73271a368ae3a69f4f6a1c51 Mon Sep 17 00:00:00 2001
+From: Alfred Chen <cchalpha@gmail.com>
+Date: Tue, 27 May 2014 16:58:19 +0800
+Subject: [PATCH] [BFS] Add missing attr.sched_flags for sched_getattr.
+
+---
+ kernel/sched/bfs.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/sched/bfs.c b/kernel/sched/bfs.c
+index bca44f7..bda36e6 100644
+--- a/kernel/sched/bfs.c
++++ b/kernel/sched/bfs.c
+@@ -4356,6 +4356,8 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 		goto out_unlock;
+ 
+ 	attr.sched_policy = p->policy;
++        if (p->sched_reset_on_fork)
++	                attr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
+ 	if (rt_task(p))
+ 		attr.sched_priority = p->rt_priority;
+ 	else
+-- 
+1.8.5.2
+
